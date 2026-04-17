@@ -1,8 +1,8 @@
 """
 thread_generator.py
 ────────────────────
-Orchestrator utama: menggabungkan riset website + Twitter/X
-lalu generate thread bergaya pemenang kontes via Groq.
+Main orchestrator: combines website + Twitter/X research
+then generates contest-winner style threads via Groq.
 """
 
 import os
@@ -22,15 +22,15 @@ from brand_analyzer import BrandAnalyzer
 logger = logging.getLogger(__name__)
 
 # ════════════════════════════════════════════════════════════════════
-# CRAFT REFERENCE — Bukan template, tapi contoh tulisan hidup
+# CRAFT REFERENCE — Not a template, but an example of living writing
 # ════════════════════════════════════════════════════════════════════
 
 CRAFT_REFERENCE = """
-Ini adalah contoh thread yang menang kontes. Baca seperti seorang penulis membaca karya terbaik —
-perhatikan MENGAPA setiap kalimat bekerja, bukan APA yang ditulis.
+This is an example of a contest-winning thread. Read it like a writer reading a masterpiece —
+pay attention to WHY each sentence works, not WHAT it says.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-THREAD REFERENSI (Fontana Ecosystem)
+REFERENCE THREAD (Fontana Ecosystem)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1/8
@@ -171,64 +171,64 @@ Whether it gets there is an open question. But the structure is one of the more 
 Website: fontanaeco.io | X: @FontanaEcoTem
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-CATATAN BAGI PENULIS — apa yang membuat thread ini bekerja:
+NOTES FOR THE WRITER — what makes this thread work:
 
-1. PEMBUKA BUKAN TENTANG PROYEK. Kalimat pertama tentang masalah industri yang pembaca rasakan sendiri.
-   Efek: pembaca merasa dipahami sebelum ditawari solusi.
+1. THE OPENER IS NOT ABOUT THE PROJECT. The first sentence is about an industry problem the reader feels themselves.
+   Effect: the reader feels understood before being offered a solution.
 
-2. KALIMAT PENDEK BUKAN TRIK STYLISTIC — ITU ADALAH KEPERCAYAAN DIRI.
-   Penulis yang tidak yakin menulis panjang untuk terlihat pintar.
-   Penulis yang yakin menulis pendek karena mereka tahu poinnya kuat.
-   "Permanently." berdiri sendiri. Satu kata. Satu pukulan.
+2. SHORT SENTENCES ARE NOT A STYLISTIC TRICK — THEY ARE CONFIDENCE.
+   Insecure writers write long to sound smart.
+   Confident writers write short because they know the point is strong.
+   "Permanently." stands alone. One word. One punch.
 
-3. SETIAP TWEET MENYIMPAN SATU KEJUTAN.
-   Twist, insight, atau framing yang tidak terduga. Pembaca tidak tahu apa yang akan datang selanjutnya.
-   Ini yang membuat orang tidak berhenti scroll.
+3. EVERY TWEET HOLDS ONE SURPRISE.
+   A twist, insight, or unexpected framing. The reader doesn't know what's coming next.
+   This is what keeps people from stopping their scroll.
 
-4. SKEPTISISME DIBANGUN KE DALAM TULISAN.
+4. SKEPTICISM IS BUILT INTO THE WRITING.
    "Long roadmaps can be theater. Anyone can write a five-year plan."
-   Penulis mengakui kelemahan SEBELUM pembaca memikirkannya. Ini membangun kepercayaan.
+   The writer acknowledges the weakness BEFORE the reader thinks of it. This builds trust.
 
-5. FAKTA DIIZINKAN BERBICARA SENDIRI.
-   Tidak ada "ini luar biasa!" — ada deskripsi mekanisme, lalu "That's a different conversation entirely."
-   Penilaian datang dari pembaca, bukan penulis.
+5. FACTS ARE ALLOWED TO SPEAK FOR THEMSELVES.
+   No "this is amazing!" — there's a description of the mechanism, then "That's a different conversation entirely."
+   The judgment comes from the reader, not the writer.
 
-6. TWITTER DATA DITENUN KE NARASI, BUKAN DILAPORKAN.
-   Bukan: "Mereka punya 10k followers."
-   Tapi: "Twitter activity reflects this — consistent communication, no sudden pivots."
-   Data Twitter menjadi bukti karakter proyek.
+6. TWITTER DATA IS WOVEN INTO THE NARRATIVE, NOT REPORTED.
+   Not: "They have 10k followers."
+   But: "Twitter activity reflects this — consistent communication, no sudden pivots."
+   Twitter data becomes evidence of the project's character.
 
-7. PENUTUP JUJUR, BUKAN HYPE.
+7. THE CLOSING IS HONEST, NOT HYPE.
    "Whether it gets there is an open question."
-   Ini justru yang paling meyakinkan. Pembaca tahu penulis tidak dibayar.
+   This is precisely what's most convincing. The reader knows the writer wasn't paid.
 """
 
 VOICE_PRINCIPLES = """
-PRINSIP SUARA PENULIS — INTERNALISASIKAN INI:
+WRITER'S VOICE PRINCIPLES — INTERNALIZE THESE:
 
-SUARAMU ADALAH: Analis independen yang baru saja habis tiga jam membaca docs, whitepaper, dan scroll Twitter project.
-Kamu excited karena menemukan sesuatu yang genuine menarik — bukan karena dibayar.
-Kamu cukup skeptis untuk jujur, cukup terbuka untuk terkesan.
+YOUR VOICE IS: An independent analyst who just spent three hours reading docs, whitepapers, and scrolling a project's Twitter.
+You're excited because you found something genuinely interesting — not because you were paid.
+You're skeptical enough to be honest, open enough to be impressed.
 
-CARA BERPIKIR SEBELUM MENULIS SETIAP TWEET:
-→ "Apa satu insight paling non-obvious dari bagian ini?"
-→ "Bagaimana cara frame ini agar pembaca berpikir: 'oh, saya tidak pernah berpikir seperti itu'?"
-→ "Apakah ada ketegangan, paradoks, atau ironi menarik di sini?"
-→ "Kalimat penutup apa yang akan membuat pembaca langsung scroll ke tweet berikutnya?"
+HOW TO THINK BEFORE WRITING EACH TWEET:
+→ "What is the single most non-obvious insight from this section?"
+→ "How do I frame this so the reader thinks: 'oh, I never thought about it that way'?"
+→ "Is there an interesting tension, paradox, or irony here?"
+→ "What closing line will make the reader immediately scroll to the next tweet?"
 
-YANG MEMBUNUH TULISAN YANG BAIK:
-- Adjektif tanpa bukti: "powerful", "innovative", "groundbreaking" — tanpa menunjukkan kenapa
-- Kalimat transisi generik: "Furthermore,", "Additionally,", "In conclusion,"
-- Menjelaskan obvious: jika pembaca bisa menebak kalimat berikutnya, hapus
-- Hype yang tidak mau mengakui risiko: terlihat seperti PR, bukan analisis
-- Bullet point yang bisa jadi kalimat: gunakan bullet HANYA ketika list benar-benar adalah list
+WHAT KILLS GOOD WRITING:
+- Adjectives without evidence: "powerful", "innovative", "groundbreaking" — without showing why
+- Generic transition sentences: "Furthermore,", "Additionally,", "In conclusion,"
+- Explaining the obvious: if the reader can predict the next sentence, delete it
+- Hype that won't acknowledge risk: looks like PR, not analysis
+- Bullet points that could be sentences: use bullets ONLY when a list is genuinely a list
 
-YANG MEMBUAT TULISAN HIDUP:
-- Framing ulang sesuatu yang familiar dengan cara baru
-- Mengakui kelemahan atau uncertainty secara jujur — lalu lanjutkan analisis
-- Kalimat yang dimulai dengan kata kerja atau subjek konkret, bukan abstraksi
-- Momen "zoom out" yang memberi konteks lebih besar, lalu "zoom in" ke detail spesifik
-- Penutup tweet yang terasa seperti kesimpulan yang ditemukan, bukan disimpulkan
+WHAT MAKES WRITING COME ALIVE:
+- Reframing something familiar in a new way
+- Acknowledging weaknesses or uncertainty honestly — then continuing the analysis
+- Sentences that start with a verb or concrete subject, not an abstraction
+- "Zoom out" moments that give broader context, then "zoom in" to a specific detail
+- Tweet closers that feel like a conclusion discovered, not declared
 """
 
 
@@ -358,7 +358,7 @@ class WebScraper:
             main["raw_html"] = html  # for brand analysis
             result["pages"].append(main)
 
-            # Capture Twitter handle dari halaman utama
+            # Capture Twitter handle from main page
             if main.get("twitter_handle"):
                 result["twitter_handle"] = main["twitter_handle"]
 
@@ -412,12 +412,12 @@ class WebScraper:
 # ════════════════════════════════════════════════════════════════════
 class ThreadGenerator:
     def __init__(self):
-        # Validasi minimal satu provider tersedia
+        # Validate that at least one provider is available
         available = get_available_providers()
         if not available:
             raise ValueError(
-                "Tidak ada API key yang dikonfigurasi. "
-                "Isi minimal satu di .env: GROQ_API_KEY, DEEPSEEK_API_KEY, atau OPENAI_API_KEY"
+                "No API keys configured. "
+                "Set at least one in .env: GROQ_API_KEY, DEEPSEEK_API_KEY, or OPENAI_API_KEY"
             )
         self.web_scraper = WebScraper()
         self.twitter_scraper = TwitterScraper()
@@ -427,7 +427,7 @@ class ThreadGenerator:
     def compile_web_research(self, data: dict) -> str:
         parts = []
         for page in data.get("pages", []):
-            ltype = {"main":"HALAMAN UTAMA","sub":"SUB-PAGE",
+            ltype = {"main":"MAIN PAGE","sub":"SUB-PAGE",
                      "fallback":"COMMON PATH"}.get(page.get("page_type",""),"PAGE")
             parts.append(f"\n{'='*55}\n{ltype}: {page.get('url','')}\n{'='*55}")
 
@@ -439,21 +439,21 @@ class ThreadGenerator:
                 parts.append(f"SOCIAL LINKS: {', '.join(page['social_links'][:4])}")
 
             if page.get("headings"):
-                parts.append("\nSTRUKTUR HALAMAN:")
+                parts.append("\nPAGE STRUCTURE:")
                 parts.extend(page["headings"][:20])
 
             if page.get("paragraphs"):
-                parts.append("\nKONTEN PARAGRAF:")
+                parts.append("\nPARAGRAPH CONTENT:")
                 for p in page["paragraphs"][:15]:
                     parts.append(f"  → {p[:400]}")
 
             if page.get("list_items"):
-                parts.append("\nFITUR/POIN-POIN:")
+                parts.append("\nFEATURES / KEY POINTS:")
                 for li in page["list_items"][:20]:
                     parts.append(f"  • {li[:300]}")
 
             if page.get("extra_content"):
-                parts.append("\nSEKSI KHUSUS:")
+                parts.append("\nSPECIAL SECTIONS:")
                 for ec in page["extra_content"]:
                     parts.append(f"  [{ec[:500]}]")
 
@@ -466,10 +466,10 @@ class ThreadGenerator:
 
         if lang == "indonesia":
             lang_directive = (
-                "Tulis dalam Bahasa Indonesia yang benar-benar natural — seperti seseorang "
-                "yang cerdas dan banyak baca, bukan terjemahan dari Inggris. "
-                "Istilah teknis crypto/web3 tetap dalam bahasa Inggris. "
-                "Hindari kalimat terjemahan literal yang terasa kaku."
+                "Write in genuinely natural Bahasa Indonesia — like someone "
+                "who is smart and well-read, not a translation from English. "
+                "Keep crypto/web3 technical terms in English. "
+                "Avoid literal translations that feel stiff."
             )
         else:
             lang_directive = (
@@ -479,112 +479,127 @@ class ThreadGenerator:
 
         twitter_block = (
             f"TWITTER/X DATA (@{twitter_handle}):\n{twitter_research}\n\n"
-            "Gunakan data Twitter sebagai bukti karakter proyek, bukan laporan. "
-            "Tone komunikasi, konsistensi posting, jenis announcement — "
-            "semua bercerita tentang siapa tim ini sebenarnya."
+            "Use Twitter data as evidence of the project's character, not a report. "
+            "Communication tone, posting consistency, types of announcements — "
+            "all of it reveals who this team actually is."
             if twitter_research and twitter_handle
-            else "Twitter: tidak tersedia. Fokus pada riset website."
+            else "Twitter: not available. Focus on website research."
         )
 
-        # ── Inject brand persona ke dalam identitas penulis ──────
+        # ── Inject brand persona into writer identity ──────
         if brand_profile:
             persona_block = f"""
-━━━ SIAPA KAMU SAAT MENULIS INI ━━━
+━━━ WHO YOU ARE WHILE WRITING THIS ━━━
 
 {brand_profile}
 
-PENTING — ini bukan instruksi gaya, ini karakter yang kamu embodikan:
-→ Sudut pandang unik dan gaya hook di atas adalah TITIK MASUK tulisanmu
-→ Brand vocabulary-nya sudah ada di otakmu — pakai secara natural, jangan dipaksakan
-→ Warna dan visual identity project itu nyata — biarkan nuansanya meresap ke pilihan kata
-→ Jika brand ini "rebellious", jangan tulis seperti prospektus
-→ Jika brand ini "institutional", jangan tulis seperti influencer kripto
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT — these are not style instructions, this is the character you embody:
+→ The unique perspective and hook style above are your ENTRY POINT into the writing
+→ The brand vocabulary is already in your head — use it naturally, don't force it
+→ The project's colors and visual identity are real — let the nuance seep into your word choices
+→ If this brand is "rebellious", don't write like a prospectus
+→ If this brand is "institutional", don't write like a crypto influencer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
         else:
             persona_block = ""
 
-        return f"""Kamu seorang penulis thread yang menang kontes bukan karena formula — tapi karena kamu menulis seperti manusia yang genuinely peduli tentang apa yang kamu tulis.
+        return f"""You are a thread writer who wins contests not because of formulas — but because you write like a human who genuinely cares about what you're writing.
 
 {CRAFT_REFERENCE}
 
 {VOICE_PRINCIPLES}
 {persona_block}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TUGAS: Tulis thread tentang → {url}
+TASK: Write a thread about → {url}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-DATA RISET WEBSITE:
+WEBSITE RESEARCH DATA:
 {web_research}
 
 {twitter_block}
 
-BAHASA: {lang_directive}
+LANGUAGE: {lang_directive}
 
-━━━ PROSES BERPIKIR SEBELUM MENULIS ━━━
+━━━ THINKING PROCESS BEFORE WRITING ━━━
 
-Lakukan ini secara mental, dalam urutan ini:
+Do this mentally, in this order:
 
-1. TEMUKAN KETEGANGAN UTAMA
-   Setiap proyek yang menarik ada di persimpangan dua hal yang tampak bertentangan.
-   Contoh: "decentralized" tapi butuh governance. "Simple" tapi teknologinya kompleks.
-   Temukan ketegangan itu — di situlah thread yang menarik lahir.
+1. FIND THE CORE TENSION
+   Every interesting project lives at the intersection of two things that seem to contradict each other.
+   Example: "decentralized" but needs governance. "Simple" but the tech is complex.
+   Find that tension — that's where compelling threads are born.
 
-2. CARI INSIGHT NON-OBVIOUS
-   Apa yang kebanyakan orang akan miss jika hanya baca headline?
-   Apa detail kecil yang ternyata mengungkapkan filosofi besar?
-   Bangun thread dari sana.
+2. LOOK FOR THE NON-OBVIOUS INSIGHT
+   What would most people miss if they only read the headline?
+   What small detail actually reveals a bigger philosophy?
+   Build the thread from there.
 
-3. TULIS PENUTUP DULU
-   Kalimat terakhir thread harus sudah ada di kepalamu sebelum kamu tulis kalimat pertama.
-   Penutup yang kuat memberi arah ke seluruh narasi.
+3. WRITE THE CLOSING FIRST
+   The last line of the thread should exist in your head before you write the first line.
+   A strong closing gives direction to the entire narrative.
 
-4. BARU TULIS HOOK
-   Hook bukan intro. Hook adalah janji kepada pembaca tentang perjalanan yang akan mereka jalani.
-   Harus spesifik, bukan generic. Harus terasa seperti percakapan, bukan pengumuman.
+4. THEN WRITE THE HOOK
+   A hook is not an intro. A hook is a promise to the reader about the journey they're about to take.
+   It must be specific, not generic. It must feel like a conversation, not an announcement.
 
-━━━ CARA MENULIS SETIAP TWEET ━━━
+━━━ HOW TO WRITE EACH TWEET ━━━
 
-Setiap tweet adalah unit narasi mandiri yang juga bagian dari arc besar:
+Each tweet is a self-contained narrative unit that is also part of a larger arc:
 
-KALIMAT PERTAMA TWEET: buka dengan fakta, observasi, atau pertanyaan yang bikin orang pause.
-Bukan: "Proyek ini memiliki fitur menarik..."
-Tapi: "Masalahnya bukan kurangnya likuiditas. Masalahnya adalah siapa yang sebenarnya kontrol likuiditas itu."
+FIRST LINE OF TWEET: open with a fact, observation, or question that makes people pause.
+Not: "This project has some interesting features..."
+But: "The problem isn't the lack of liquidity. The problem is who actually controls that liquidity."
 
-TENGAH TWEET: berikan satu lapisan kedalaman. Bullet jika memang list. Prose jika mengalir lebih baik.
+MIDDLE OF TWEET: give one layer of depth. Bullets if it's genuinely a list. Prose if it flows better.
 
-KALIMAT TERAKHIR TWEET: ini yang paling penting.
-Harus pendek. Harus terasa seperti kesimpulan yang ditemukan, bukan dideklarasikan.
-"Dan itu yang mengubah segalanya." ← terlalu generic
-"Selling, for once, isn't an exit." ← spesifik, unexpected, memorable
+LAST LINE OF TWEET: this is the most important part.
+Must be short. Must feel like a conclusion discovered, not declared.
+"And that changes everything." ← too generic
+"Selling, for once, isn't an exit." ← specific, unexpected, memorable
 
-━━━ YANG DILARANG (non-negotiable) ━━━
+━━━ WHAT IS FORBIDDEN (non-negotiable) ━━━
 
-✗ Mengarang data, angka, atau kutipan yang tidak ada di riset
-✗ Kata-kata: "amazing", "revolutionary", "game-changing", "groundbreaking", "innovative"
-   → Tunjukkan dengan mekanisme konkret, jangan labeli dengan adjektif
-✗ Kalimat yang bisa ditebak pembaca sebelum selesai dibaca
-✗ Penutup triumphant tanpa acknowledgment of risk atau uncertainty
-✗ Lebih dari 2 emoji per tweet
+✗ Fabricating data, numbers, or quotes not present in the research
+✗ Words: "amazing", "revolutionary", "game-changing", "groundbreaking", "innovative"
+   → Show it through concrete mechanisms, don't label it with adjectives
+✗ Sentences the reader can predict before they finish reading
+✗ Triumphant closings without any acknowledgment of risk or uncertainty
+✗ More than 2 emojis per tweet
 
-━━━ ATURAN FORMAT ━━━
+━━━ FORMAT RULES ━━━
 
-- Numbering: "1/N" — tentukan total dulu, baru tulis semua
-- Min 7, maks 12 tweets
-- Tweet 1 diakhiri: "Stay w me 🧵..." atau variasi natural
-- Tweet terakhir: refleksi jujur + URL website + @handle jika ada
-- Setiap tweet dipisahkan oleh "---" dalam JSON, tapi dalam teks tweet gunakan \n\n untuk paragraf baru
+- Numbering: "1/N" — decide the total first, then write all tweets
+- Min 7, max 12 tweets
+- Tweet 1 ends with: "Stay w me 🧵..." or a natural variation
+- Last tweet: honest reflection + website URL + @handle if available
+- Each paragraph within a tweet is separated by \\n\\n inside the JSON string
 
-RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
+RETURN ONLY VALID JSON — no text before or after the curly braces.
+
+⚠️  CRITICAL JSON RULES — MUST BE FOLLOWED:
+Use \\n (two characters: backslash + n) for line breaks inside JSON strings.
+DO NOT use literal enter/newline inside strings — it will break the JSON.
+
+WRONG  (literal newline, broken JSON):
+  "tweets": ["1/9
+First sentence
+
+Second sentence"]
+
+CORRECT  (escaped, valid JSON):
+  "tweets": ["1/9\\nFirst sentence\\n\\nSecond sentence"]
+
+Template:
 {{
-  "project_name": "Nama Project",
-  "project_archetype": "the_rebel / the_frontier / dll jika tahu",
-  "twitter_handle": "@handle_atau_kosong",
+  "project_name": "Project Name",
+  "project_archetype": "the_rebel / the_frontier / etc",
+  "twitter_handle": "@handle_or_empty",
   "total_tweets": 9,
   "tweets": [
-    "1/9\nKalimat pembuka yang kuat.\n\nParagraf kedua.\n\nKalimat penutup.",
-    "2/9\nIsi tweet dua.",
-    "3/9\nDan seterusnya sampai tweet terakhir..."
+    "1/9\\nStrong opening line.\\n\\nSecond paragraph.\\n\\nShort closer.",
+    "2/9\\nTweet two content.\\n\\nDeeper detail.",
+    "3/9\\nAnd so on until the last tweet..."
   ]
 }}
 """
@@ -599,16 +614,16 @@ RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
             web_data = await self.web_scraper.deep_scrape(url)
 
             if not web_data.get("pages"):
-                return {"success": False, "error": "Tidak bisa mengakses website."}
+                return {"success": False, "error": "Could not access the website."}
 
             web_research = self.compile_web_research(web_data)
 
             if len(web_research) < 150:
                 return {"success": False,
-                        "error": "Konten terlalu sedikit. Coba URL docs/whitepaper project."}
+                        "error": "Too little content found. Try the project's docs/whitepaper URL."}
 
             # ── Step 2: Detect/Scrape Twitter ───────────────────────
-            # Prioritas: handle yang user input > auto-detect dari website
+            # Priority: user-provided handle > auto-detected from website
             detected_handle = web_data.get("twitter_handle", "")
             final_handle = twitter_handle or detected_handle or ""
 
@@ -623,7 +638,7 @@ RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
                     logger.info(f"Twitter research OK: {len(twitter_research)} chars")
                 else:
                     logger.warning(f"Twitter scrape failed for @{final_handle}")
-                    twitter_research = f"[Twitter @{final_handle}: data tidak bisa diakses saat ini]"
+                    twitter_research = f"[Twitter @{final_handle}: data could not be accessed at this time]"
             else:
                 logger.info("No Twitter handle — website only mode")
 
@@ -645,18 +660,18 @@ RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
             except Exception as e:
                 logger.warning(f"Brand analysis failed (non-fatal): {e}")
 
-            # ── Step 4: Generate dengan AI provider ────────────────
+            # ── Step 4: Generate with AI provider ────────────────
             logger.info(f"Generating with provider: {provider}")
             prompt = self.create_prompt(
                 web_research, twitter_research, url, final_handle, lang, brand_profile
             )
 
             system_prompt = (
-                "Kamu adalah penulis dengan suara khas — "
-                "berpikir seperti jurnalis investigatif, menulis seperti essayist yang peduli craft. "
-                "Setiap kalimat harus bisa menjawab: mengapa kalimat ini harus ada? "
-                "Tidak pernah mengarang data. "
-                "Return ONLY valid JSON — tidak ada teks sebelum { maupun sesudah }."
+                "You are a writer with a distinctive voice — "
+                "thinking like an investigative journalist, writing like an essayist who cares about craft. "
+                "Every sentence must be able to answer: why does this sentence need to exist? "
+                "Never fabricate data. "
+                "Return ONLY valid JSON — no text before { or after }."
             )
 
             raw, provider_used = await generate_with_fallback(
@@ -668,7 +683,7 @@ RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
 
             if not data or "tweets" not in data:
                 logger.error(f"JSON parse failed. Raw: {raw[:300]}")
-                return {"success": False, "error": "Gagal parse response AI. Coba lagi."}
+                return {"success": False, "error": "Failed to parse AI response. Please try again."}
 
             tweets = data["tweets"]
             total = len(tweets)
@@ -701,16 +716,141 @@ RETURN HANYA JSON VALID — tidak ada teks sebelum atau sesudah kurung kurawal:
             return {"success": False, "error": str(e)}
 
     def _parse_json(self, raw: str) -> Optional[dict]:
-        for fn in [
-            lambda: json.loads(raw),
-            lambda: json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.MULTILINE).strip()),
-            lambda: json.loads(re.search(r"\{[\s\S]*\}", raw).group()) if re.search(r"\{[\s\S]*\}", raw) else (_ for _ in ()).throw(ValueError()),
-        ]:
+        """
+        Robust JSON parser with a layered repair pipeline.
+        Handles various LLM output quirks:
+        - Literal newlines inside string values (most common bug)
+        - Markdown code fences (```json ... ```)
+        - Preamble text before {
+        - Trailing commas, comments, stray characters
+        """
+        candidates = [raw]
+
+        # Strip markdown fences
+        stripped = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.MULTILINE).strip()
+        if stripped != raw:
+            candidates.append(stripped)
+
+        # Extract JSON block from surrounding text
+        m = re.search(r"\{[\s\S]*\}", raw)
+        if m:
+            candidates.append(m.group())
+
+        for candidate in candidates:
+            # Try direct parse
             try:
-                r = fn()
-                if r: return r
-            except Exception:
-                continue
+                r = json.loads(candidate)
+                if r and isinstance(r, dict):
+                    return r
+            except json.JSONDecodeError:
+                pass
+
+            # Repair: escape literal newlines inside string values
+            repaired = self._repair_json_strings(candidate)
+            try:
+                r = json.loads(repaired)
+                if r and isinstance(r, dict):
+                    logger.info("JSON repaired via string escape fix")
+                    return r
+            except json.JSONDecodeError:
+                pass
+
+            # Repair: remove trailing commas before } or ]
+            no_trailing = re.sub(r",\s*([}\]])", r"\1", repaired)
+            try:
+                r = json.loads(no_trailing)
+                if r and isinstance(r, dict):
+                    logger.info("JSON repaired via trailing comma removal")
+                    return r
+            except json.JSONDecodeError:
+                pass
+
+        # Last resort: manual tweet extraction if JSON is too broken
+        return self._extract_tweets_manually(raw)
+
+    def _repair_json_strings(self, raw: str) -> str:
+        """
+        Escape literal control characters inside JSON string values.
+        LLMs often write literal newlines instead of \\n inside JSON strings.
+        """
+        result = []
+        in_string = False
+        i = 0
+        while i < len(raw):
+            c = raw[i]
+            # Toggle string state on unescaped quote
+            if c == '"' and (i == 0 or raw[i-1] != '\\'):
+                in_string = not in_string
+                result.append(c)
+            elif in_string:
+                # Escape control characters that should be escaped
+                if c == '\n':
+                    result.append('\\n')
+                elif c == '\r':
+                    result.append('\\r')
+                elif c == '\t':
+                    result.append('\\t')
+                elif ord(c) < 0x20:  # other control characters
+                    result.append(f'\\u{ord(c):04x}')
+                else:
+                    result.append(c)
+            else:
+                result.append(c)
+            i += 1
+        return ''.join(result)
+
+    def _extract_tweets_manually(self, raw: str) -> Optional[dict]:
+        """
+        Last resort: manually extract tweets from raw text
+        if JSON is completely unparseable.
+        Looks for the pattern "1/N ... 2/N ... etc"
+        """
+        logger.warning("Falling back to manual tweet extraction")
+
+        # Find project_name
+        name_match = re.search(r'"project_name"\s*:\s*"([^"]+)"', raw)
+        project_name = name_match.group(1) if name_match else "Unknown Project"
+
+        # Find twitter_handle
+        handle_match = re.search(r'"twitter_handle"\s*:\s*"([^"]*)"', raw)
+        twitter_handle = handle_match.group(1) if handle_match else ""
+
+        # Find total_tweets first
+        total_match = re.search(r'"total_tweets"\s*:\s*(\d+)', raw)
+        total = int(total_match.group(1)) if total_match else 10
+
+        # Extract tweet content with regex
+        # Pattern: "N/M\n...content..." or "N/M content"
+        tweet_pattern = re.compile(
+            r'"(\d+/' + str(total) + r'[\s\S]*?)(?="' + r'\d+/' + str(total) + r'|"\s*\])',
+            re.MULTILINE
+        )
+        found = tweet_pattern.findall(raw)
+
+        if not found:
+            # Fallback: split by numbering pattern
+            parts = re.split(r'(?="?\d+/\d+)', raw)
+            found = [p.strip().strip('"').strip() for p in parts if re.match(r'\d+/\d+', p.strip().strip('"'))]
+
+        if found and len(found) >= 3:
+            tweets = []
+            for t in found:
+                # Clean up: remove stray escape chars, trim
+                t = t.strip().strip('"').strip()
+                t = re.sub(r'\\n', '\n', t)
+                t = re.sub(r'\\t', '\t', t)
+                if len(t) > 10:
+                    tweets.append(t)
+
+            if len(tweets) >= 3:
+                logger.info(f"Manual extraction: recovered {len(tweets)} tweets")
+                return {
+                    "project_name": project_name,
+                    "twitter_handle": twitter_handle,
+                    "total_tweets": len(tweets),
+                    "tweets": tweets,
+                }
+
         return None
 
     def _domain(self, url: str) -> str:
